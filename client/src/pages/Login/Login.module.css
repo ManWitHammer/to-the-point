@@ -1,0 +1,247 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Tiny5&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Nunito", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+}
+
+html,
+body {
+    height: 99%;
+}
+
+body {
+    background: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url(../../assets/Mountain1.jpg);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+}
+
+.toHome {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    background: rgb(22, 56, 99);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+    cursor: pointer;
+}
+
+.toHome svg {
+    width: 70%;
+    height: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@keyframes scaleContainerUp {
+    0% {
+        transform: scaleY(0.01) scale(0.5);
+    }
+    100% {
+        transform: scaleY(1.0) scale(1);
+    }
+}
+
+.container {
+    width: 460px;
+    padding: 50px;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(2px);
+    box-shadow: 0px 0px 20px 1px rgba(0, 0, 0, 0.4);
+    animation: scaleContainerUp 0.18s ease-in-out forwards;
+}
+
+.auth {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    gap: 30px;
+    margin-left: 10px;
+    margin-bottom: 40px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.login h2 {
+    color: white;
+    text-decoration: underline;
+    text-decoration-color: white; 
+    text-decoration-thickness: 3px; 
+    text-underline-offset: 0.25em;
+    cursor: pointer;
+}
+
+@keyframes underlineAnimationOn {
+    0% {
+      text-decoration-color: transparent;
+      text-decoration-thickness: 0;
+    }
+    100% {
+      text-decoration-color: white; 
+      text-decoration-thickness: 3px; 
+    }
+}
+
+@keyframes underlineAnimationOff {
+    0% {
+        text-decoration-color: white; 
+        text-decoration-thickness: 3px; 
+    }
+    100% {
+        text-decoration-color: transparent;
+        text-decoration-thickness: 0;
+    }
+}
+
+.register h2 {
+    color: rgb(193, 193, 193);
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: transparent; 
+    text-underline-offset: 0.25em;
+    transition: 0.2s;
+}
+
+.register h2:hover {
+    color: white ;
+    animation: underlineAnimationOn 0.3s ease forwards;
+}
+
+.onHovered-underline-up {
+    color: white;
+    animation: underlineAnimationOn 0.3s ease forwards;
+}
+
+.onHovered-underline-down {
+    color: rgb(193, 193, 193) !important;
+    animation: underlineAnimationOff 0.3s ease forwards;
+}
+
+label {
+    color: rgb(225, 225, 225);
+    padding-left: 5px;
+    text-align: start;
+    font-size: 14px;
+}
+
+input {
+    padding-left: 5px;
+    height: 40px;
+    font-size: 16px;
+    background: none;
+    border: none;
+    color: white;
+    border-bottom: 2px solid rgb(117, 117, 117);
+}
+
+input:focus {
+    outline: none;
+}
+
+button {
+    margin-top: 40px;
+    background: none;
+    border: none;
+    color: white;
+    padding: 15px;
+    font-size: 17px;
+    background: rgb(22, 56, 99);
+    border-radius: 5px;
+    cursor: pointer;
+    transform: scale(1);
+    transition: 0.27s ease-in-out;
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+
+button:active {
+    transform: scale(0.9);
+}
+
+.error {
+    text-align: start;
+    color: rgb(255, 39, 39);
+    font-size: 15px;
+    margin: 0px;
+}
+
+.verify {
+    text-align: start;
+    color: rgb(88, 255, 37);
+    font-size: 15px;
+    margin: 0px;
+}
+
+.link {
+    margin-top: 10px;
+    color: rgb(193, 193, 193);
+    text-decoration: none;
+    text-align: center;
+}
+
+.link:hover {
+    color: white;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+
+@media screen and (max-height: 500px) {
+    .container {
+         height: 100%;
+    }
+}
+
+@media screen and (max-width: 480px){
+    .container {
+        height: 100%;
+        padding: 30px;
+    }
+    .toHome {
+        display: none;
+    }
+}
+
+@media screen and (max-width: 344px){
+    .auth {
+        gap: 20px;
+    }
+}
