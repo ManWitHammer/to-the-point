@@ -1,9 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
-import Authpage from "./pages/Registration/RegistrationPage.jsx"
-import Loginpage from "./pages/Login/LoginPage.jsx"
-import App from "./App.jsx"
+import ProtectedRoute from './components/ProtectedRoute'
+import NotAuthForRoute from './components/NotAuthForRoute'
+import ProtectedTasks from './components/ProtectedTasks'
+import Authpage from "./pages/Registration/RegistrationPage"
+import MainPage from './pages/Main/MainPage'
+import Loginpage from "./pages/Login/LoginPage"
+import ProfilePage from './pages/Profile/ProfilePage'
+import App from "./App"
 
 const router = createBrowserRouter([
 	{
@@ -12,11 +17,43 @@ const router = createBrowserRouter([
   },
   {
     path: '/registration',
-    element: <Authpage />
+    element: (
+      <NotAuthForRoute>
+        <Authpage />
+      </NotAuthForRoute>
+    )
   },
   {
     path: '/login',
-    element: <Loginpage />
+    element: (
+      <NotAuthForRoute>
+        <Loginpage />
+      </NotAuthForRoute>
+    )
+  },
+  {
+    path: '/profile',
+    element: (
+			<ProtectedRoute>
+				<ProfilePage />
+			</ProtectedRoute>
+		)
+  },
+  {
+    path: '/main',
+    element: (
+      <ProtectedRoute>
+        <ProtectedTasks>
+          <MainPage />
+        </ProtectedTasks>
+      </ProtectedRoute>
+		)
+  },
+  {
+    path: '/*',
+    element: (
+			<App />
+		)
   }
 ])
 

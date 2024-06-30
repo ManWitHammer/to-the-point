@@ -1,5 +1,12 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    list-style: none;
+}
+
 body {
-    background: white;
+    background: rgb(14, 34, 61);
 }
 
 .app {
@@ -7,29 +14,111 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-}
-
-.fixedBlock {
-    position: fixed;
-    width: 100%;
-    height: 50px;
-    background: rgb(22, 56, 99);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .card {
     margin-top: 50px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
+    gap: 5px;
 }
 
-.card-btn {
-    width: 400px;
-    height: 250px;
-    color: black;
-    font-size: 20px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-image: url("data:image/webp;base64,UklGRpwKAABXRUJQVlA4IJAKAAAQSACdASrkAJ4APpE+m0ilo6KhLfQ7ALASCWUDxO3TbUcd2n6h7JZx6dKr6I3OfiIiUFl2KAszxm6SQ6y+ziqPx8zr6/Iq76GCKd9tX5Ra2lUf7giJZpQqdRnMEX7/JB4+Cu3kArQ4x/jDdQcPMLTIJk4sY/pZiujkx6enxGiarRwcVaw7mtRkKWlDIjdUs78kJqmpELSMQdYI7lZbFMt8NEDyipqkxiyXIRxaXK8LKilDtHBPdfjRu4yTvpnJb4Zl1kbvzgyzgRWkfGR8Glq+N+CSq+UaOaDZStz3W1n1YyiDIiquMUU4GfZpQsGCov8LY7Pqnt1TeFFapEcZbE0wPrAnjHBCxBk/MzHi6wW0LFVtrW+X7nY8zUphjtXkNZB7eLetJNyFv745ZltzfNsqKNsJSacMZhTRg5inIITpPyabffRJ1Aayz17EKVRtt35brXkvkxXfIb6b/r8fvzIwq1gm8Ag+nIIwaos1BPFYgHJSzyFX+mBnzZYiQcf+KCzOxnXMe49SNFue16mZeqHbK8DHCpvfxqh5J+pvlvKwL0U4MWtNopDko0f0ZpfWdNeNQ18nS2zkR1Jhj4vKwDtEzJO/sS4gOAXp2E3gfoBh5DJ873qNuWyRoBJCC0rTofjab/xSwLCbB1SMaCNP4l8AfvYBOIqLJPN5EvsOOQk4gF8sBejmg2zUZRCkYDaLA/0bvREez2RUCfWYISaBh64HUg/Dv56nemht96ltMIz1B0TUiaV20fYVakEabjmaRQ6xrrPcZdPROqgA/vhVeMkQXVIA6cLuA+KXABAec2A+ySDBT2aYRxhmr8yKIcIShz5Yde4jZptvpm4zOZ8a+80RDMeclRy0R8GapCAkWPCFSLF4itRHvg/pCYwdRoPBkAMdzqqZ0xRbwXbkuqC+ltGayo5zbRpiCAEZ0Dz7gs70w9C4Pht9LN3bb9PMeaxduqRTKGs3cMbjx3Pk1QmABXb4yYNrppXr0C4s7XCPthKtGLqeHHcozEoG/mN2/70dBJTLn+QvY3hwhXwVYRy9K8reWNkZfqMOMbLROACg+OlNl0Zt6HV9o9GZgppQf4AgBT/6hhlhZ66/GpHNPXco1eKVOK5/WSvypW21MgNSxftRZtoi9hiVwyTpSpdYPn7xEIEPUKfi24GKNu/fFFoo4Z6hZj+h3AB+r6uQqx2TDd4irVgCb6ZO2zhTNpmTvQ1CWWe3PQX2msLj5EbOvH4CCkDim8spPeN6o+BtHVO8Sp2GRQgAW1+EO3VDgJUqkQhb0Sl+mSdDkuTSoroyOcW4q1ha9ekNZOT+znHMyS+mNwJxj5d+RHiZQXis94tFWQV2C4xJoU3It//jPpkY7fmOFQsGU49RzzaIbxk5M71VwY2UB3e0RwyObZ6dGypgPaFUMUG8x1Erm0uj0F7J6cSUmbeGNKtFs4YxwXMBKXbimnEmGehY0ZiA3hwLS0L+UCcmH3YiznwF9ytD4Q8G8kOeugTHRldyt6lgGNzQsYrDJMNRsCQcDH/7PbicaUb2mA//xpeSjByErsXQWy4SFcR3uHeXYqwTJ14FYPQHqsRptAUsaavdpaYKlqExSEJph1PPckirUGI5gARK6bzViALXSq7hGfyY+yGpocQz17hhOorOf+gGsfTQVYMkc85WD9u80q3spyQvcOCJNBeGkWUMurb/JuuIHscN3HV172YXxfu5HqvZFmr4D+y0BVYcTJqdx5Ue90AxwR7ctqv4ieHA0V65yHdnW0shN7FddEEFB4zcKU87i8hPCTL78qRdx1pv1pYZakCY7O6AfkRiKasnJ9rvhFfQFQbI1QRqHF1+FhNpM4Rq4RTqxauHPGPRm0uLJ1l+vSxS4lNXW9MxyZbPyQfpHUtQmmQ/zbiHuoY/ZJk7iq4/M8guczGiZv9iwrQPk74RbNv7XyrS2soa0MqzhwLC2wg4q7jOLyIqGsyEgddVhAZf9a0qLeNVYLPH7zgBerW/6bXapVStARpZ9fS3EtlfnFpjbH/N9/LyybdyKgArfNe55RIityZ2se1ZbLoMebt+gTGCke8MjzWNzJnuyzpZ2WRGAfR7N0nKNRRm18h9ST9y8CnghH1sMyECnJhi+j9QJ6gcg33MvdCK+NeRUtltR4F8b22V2fpL/m/iyYeD3w3fueAd4hRW2fEz7NIgGtW41DjpHw44i66vaajZ6afFiT5V4kueYxaBEwo9nvgMP21ozU9DgX6NTqujWCkwcgbImsvWQjgr7VXm9uMZF0jeFm+ldwP0+Nl/LQdh1G7Kd6hlj4NY3NfF2okqxOn2micYfWIKGTWbWOvUQGZZ85UK2URlo826nPuy5Wb9zN8WASvP3RdS50vhxdeqDIgeYJoejy2AgUyYQQnSlt4Smz9TQHrq4dbUMvjSp1ww/7qjFyrlapC2kNEEZOALjK1D7Qdyj0c2FwAt1lGLqDgGuz7gkH69gk/SthjZIolgeo8jv4xAqPf02zbYdNLfS1JHzEAkWLpaTFciNCba5WthoCwl6J6tcPnFglf5bLPYi9GUrsAcHsKP+YS6MkN1c0MsdW1oLRDLzyB1P3pScLTbkLakCrA6uMJ0UbDQlzKV6gIveu7V25DZIXnqP4qB/frz/27RHMld76zyMrcem6BR32ZTTSDUD4zqxHWHPdu7lK9qvQIE0J7ppKwLn/3MVyD8qmcnni9444PtNnw5u2mk+EOzcWGEEGa0MxknZ9BNvCkEjmgFe76tHFiD56VaRL4sCOsHYUxuA6rKD7NQ+MLFy+cSYI6ZD+Wl02fBypF5VRbcHsLW/BgjjuZ5yzyNi6Zetbj25p6PXtr3KcrGgGO0ckc2wkW+gqSHClHLwDMJCj5dRvjLXJ52z4qrL17jLjN8ooQg0RmnA1Qjw5eKQEb2Qy1FiJQ0aeoVsblaMqFO2OXuCg56Xx6EGbFjhjwNm0DazxdzQ/QcmfpncA64FSo7O1SJQlJRemYBrGe93+ggYOIoiWsbS2XCdd54HQR6oEyTr6EjLr9DvDAb+McMGYOMLuA12uRbwOezJ/7E0XpCkxX2bVUKKEhtzyEbaOujLTxI1oC7mBnBfRo2H8fpTYzOL4hgYLj8/83eBNgJqNGbFltHdKmu0GiRqWMbU7+Thgq7FyGLXk1EUzbe1iTQMhYjQpnyt/LxhxjdA6Ljntafxq7n+49fjD55+liiXings4aqlDbjmKgjaPMEEHRTcEoEPimRYZTyyA8lorv3YAMvVe8SiSChBwkKvDtWCbQYIhfUJOkAMjX/sS4w11RLRv8jf+685xwKewPY7nnsFXlM4PdRJfuSZmC1I34IUGo2p3SEZa9vLT9oniL+TISxHjMxmZ3NCI/oF8FgNbVASN5IbycSpfu52npRwImng75Sbpv87k+SLXSl1i7fq4Q1gYZu6BtQ0i3VgY6F3LFgQ6+oc3pLD46tl5Y3aCtwLf6QOnYWUI5mTSAKsClry7eFKJ0Zj4EZha+/EXHZ+oJsyz6zHZKLKh+g7eRo9lG35SrCTpfAXJ6tLFJI9skVteSmJUfV9MaFXlWVDVPPAU47qmkg1X+i0SCHL1pbTzi5KLRoTRWDyH2ZoBVMargpMFxxT0AAAAAA")
+.toAuth {
+    position: absolute;
+    right: 10px;
+    background: white;
+    padding: 5px;
+    border-radius: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    cursor: pointer;
+}
+
+.avatar:hover img {
+    width: 35px;
+    height: 35px;
+}
+
+.toThePointText {
+    width: 440px;
+    color: white;
+    font-size: 1.3em;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toThePointText h1 {
+    color: white;
+    font-size: 60px;
+}
+
+.toThePointImg {
+    margin-top: 30px;
+    width: 440px;
+    height: 440px;
+}
+
+.toThePointImg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.signUp {
+    margin-top: 0px;
+    height: 50px;
+    width: auto;
+    background: white;
+    border-radius: 20px;
+    color: rgb(14, 34, 61);
+}
+
+@media screen and (max-width: 988px) {
+    .card {
+        flex-direction: column-reverse;
+        margin-top: 20px;
+    }
+    .toThePointText {
+        width: 80%;
+    }
+    .toThePointText p {
+        text-align: center;
+        font-size: 20px;
+    }
+    .toThePointText h1 {
+        text-align: center;
+        font-size: 40px;
+    }
+    .signUp {
+        margin-top: 40px;
+        margin-bottom: 40px;
+    }
+}
+
+@media screen and (max-width: 765px) {
+    .toThePointImg {
+        height: auto;
+        width: 60%; /* Ширина контейнера 60% */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden; /* Скрывает все, что выходит за пределы контейнера */
+        position: relative;
+        aspect-ratio: 1; /* Соотношение сторон 1:1 */
+    }
+    .toThePointText p {
+        text-align: center;
+        font-size: 15px;
+    }
+    .toThePointText h1 {
+        text-align: center;
+        font-size: 30px;
+    }
 }

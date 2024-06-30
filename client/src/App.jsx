@@ -1,85 +1,41 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import { NavLink } from 'react-router-dom'
-import axios from "axios"
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import styles from './App.module.css'
+import { useUserStore } from '../store/userStore.js'
+import icon from "./assets/icon-notBack.png"
+import Header from "./components/Header/Header"
+
 
 function App() {
-  const [count, setCount] = useState(+localStorage.getItem('count') || 0)
-  const [valueGPT, setValueGPT] = useState('')
-  const [chatGPT, setChatGPT] = useState('')
-  const chatWithGPT = async () => {
-    console.log("жди")
-    const API_URL = 'https://chatgpt-3-5-to-the-point.onrender.com/v1/chat/completions';
-    if (valueGPT === '') {
-      alert('Введите текст для общения с GPT-3.5')
-      return;
-    }
+  const { userName, userSurname, userEmail, userId } = useUserStore()
+  const checkAuth = useUserStore(state => state.checkAuth)
+  const navigate = useNavigate()
 
-    const data = {
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "user",
-          content: "Hello!"
-        }
-      ],
-      stream: true
-      };
-
-    const config = {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    };
-
-    await axios
-      .post(API_URL, data, config)
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }
+	useEffect(() => {
+		const verifyAuth = async () => {
+      await checkAuth()
+		}
+		verifyAuth()
+	}, [checkAuth])
 
   return (
     <div className={styles["app"]}>
-      <div className={styles["fixedBlock"]}></div>
+      <Header />
       <div className={styles["card"]}>
-        <button 
-          className={styles["card-btn"]}
-          onClick={() => {
-            if (localStorage.getItem('accessToken') !== null) {
-              setCount((count) => count + 2)
-              localStorage.setItem('count', count)
-            }
-            else {
-              alert("Эй, ты не авторизовался на нашу страничку🙄")
-            }
-          }}
-        >count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-        <input
-          name="chat"
-          placeholder="Введите сообщение"
-          value={valueGPT} 
-          onChange={e => setValueGPT(e.target.value)}
-        />
-
-        <button
-          onClick={chatWithGPT}
-        >Нажми на меня</button>
-        <NavLink
-          to='./login'
-          id='link'>
-          Авторизоваться
-        </NavLink>
+        <div className={styles["toThePointText"]}>
+          <h1>LET'S GO TO THE POINT</h1>
+          <p>To the point — это мощное и многофункциональное приложение для управления задачами и делами, которое помогает пользователям организовывать своё время и повышать продуктивность.</p>
+        </div>
+        <div className={styles["toThePointImg"]}>
+          <img src={icon} alt="to-the-point" />
+        </div>
       </div>
+      {userName && userSurname && userEmail && userId ? (
+        <button className={styles["signUp"]} onClick={() => navigate("./main")}>Открыть свой To do list</button>
+      ) : (
+        <button className={styles["signUp"]} onClick={() => navigate("./registration")}>Зарегистрироваться сейчас!</button>
+        
+      )}
     </div>
   )
 }

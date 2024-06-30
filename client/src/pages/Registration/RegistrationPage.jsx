@@ -4,10 +4,13 @@ import styles from './Registration.module.css'
 import { useNavigate } from 'react-router-dom'
 import cn from 'classnames'
 import { FaChevronLeft } from "react-icons/fa";
+import { useUserStore } from '../../../store/userStore.js'
 
 export default function Registration() {
-
+    const registration = useUserStore(state => state.registration)
     const navigate = useNavigate()
+    const [name, setName] = useState('');
+    const [surname, setSurname] = useState('');
     const [email, setEmail] = useState('');
     const [errorEmail, setErrorEmail] = useState('');
     const [verifyEmail, setVerifyEmail] = useState('');
@@ -20,6 +23,10 @@ export default function Registration() {
     const [apiErrors, setApiErrors] = useState("")
     const [loadThis, setloadThis] = useState("Зарегистрироваться")
     const [isHovered, setIsHovered] = useState(false);
+
+    useEffect(() => {
+        document.title = "To the point | Регистрация"
+    }, [])
 
     const handleHover = () => {
         setIsHovered(true);
@@ -101,29 +108,22 @@ export default function Registration() {
             setVerifyPass('')
             setVerifyEmail('')
             setApiErrors('')
-            const data = {
-                email,
-                password,
-            }
-            const url = 'http://localhost:3000/api/registration'
-            const res = await axios.post(url, data, { withCredentials: true })
+            const res = await registration(email, password, name, surname)
             setloadThis('Зарегистрироваться')
-            localStorage.setItem('accessToken', res.data.accessToken)
-            console.log(res.data)
+            localStorage.setItem('accessToken', res)
             alert('Вы успешно зарегистрировались')
             navigate('../')
         } catch (error) {
             setloadThis('Войти')
-            if (error.response) {
-                setApiErrors(error.response.data.message);
-            } else if (error.request) {
-                setApiErrors('Нет ответа от сервера');
-            } else {
-                setApiErrors('Ошибка соединения');
+            if (error.message) {
+                setApiErrors(error.message)
+            }
+            else {
+                setApiErrors("Ошибка сервера, попробуйте позже")
             }
         }
-
     }
+    
     return (
         <div className={styles["auth-container"]}>
             <div 
@@ -149,6 +149,32 @@ export default function Registration() {
                 </div>
                 <form>
                     {apiErrors !== "" ? <p className={styles["error"]}>{apiErrors}</p> : ""}
+                    <div className={styles["nameAndSurname"]}>
+                        <div className={styles["name"]}>
+                            <label>Имя</label>
+                            <input 
+                                style={errorEmail !== "" ? {borderBottom: "2px solid red"} : {}}
+                                type="text" 
+                                name="name" 
+                                placeholder="Введите имя" 
+                                value={name}
+                                onChange={e => setName(e.target.value)}
+                                autoComplete="off"
+                            />
+                        </div>
+                        <div className={styles["surname"]}>
+                            <label>Фамилия</label>
+                            <input 
+                                style={errorPass !== "" ? {borderBottom: "2px solid red"} : {}}
+                                type="text" 
+                                name="surname"
+                                placeholder="Введите фамилию"
+                                value={surname} 
+                                onChange={e => setSurname(e.target.value)}
+                                autoComplete="off"
+                            />
+                        </div>
+                    </div>
                     <label>Почта</label>
                     {errorEmail !== "" ? <p className={styles["error"]}>{errorEmail}</p> : ""}
                     {verifyEmail !== "" ? <p className={styles["verify"]}>{verifyEmail}</p> : ""}
@@ -156,7 +182,7 @@ export default function Registration() {
                         style={errorEmail !== "" ? {borderBottom: "2px solid red"} : {}}
                         type="email" 
                         name="email" 
-                        placeholder="Введите email" 
+                        placeholder="Введите почту" 
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                     />
@@ -167,9 +193,10 @@ export default function Registration() {
                         style={errorPass !== "" ? {borderBottom: "2px solid red"} : {}}
                         type="password" 
                         name="password"
-                        placeholder="Введите password"
+                        placeholder="Введите парль"
                         value={password} 
                         onChange={e => setPassword(e.target.value)}
+                        autoComplete="off"
                     />
                     <label>Подтвердите пароль</label>
                     {errorPassAgain !== "" ? <p className={styles["error"]}>{errorPassAgain}</p> : ""}
@@ -178,9 +205,10 @@ export default function Registration() {
                         style={errorPassAgain !== "" ? {borderBottom: "2px solid red"} : {}}
                         type="password" 
                         name="password" 
-                        placeholder="Введите password" 
+                        placeholder="Введите ещё раз пароль" 
                         value={passwordAgain}
                         onChange={e => setPasswordAgain(e.target.value)}
+                        autoComplete="off"
                     />
                     <button type="submit" onClick={yourAccount}>{loadThis}</button>
                 </form>

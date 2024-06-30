@@ -1,0 +1,123 @@
+.app {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.card {
+    position: relative;
+    padding: 30px;
+    padding-top: 60px;
+    color: rgb(14, 34, 61);
+    width: 450px;
+    border-radius: 20px;
+    background: rgb(255, 255, 255);
+    margin-top: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.toAuth {
+    position: absolute;
+    right: 10px;
+    background: white;
+    padding: 5px;
+    border-radius: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    cursor: pointer;
+}
+
+.avatar {
+    box-sizing: content-box;
+    position: absolute;
+    top: -40px;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 5px solid rgb(255, 255, 255);
+    backdrop-filter: brightness(10%);
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+}
+
+.darkAvatar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    text-align: center;
+    color: white;
+    opacity: 0;
+    z-index: 7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s ease;
+}
+
+.darkAvatar:hover {
+    opacity: 1;
+}
+
+.yourNameAndSurname {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.yourName,
+.yourSurname {
+    padding: 5px;
+    padding-left: 10px;
+    margin-bottom: 5px;
+    background: rgba(0, 0, 0, 0);
+    width: 50%;
+    border-radius: 10px;
+    transition: 0.2s ease;
+    cursor: copy;
+}
+
+.yourName:hover,
+.yourSurname:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.yourInfo {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 5px;
+    padding-left: 10px;
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0);
+    cursor: copy;
+}
+
+.yourInfo:hover {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.rickRoll {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}

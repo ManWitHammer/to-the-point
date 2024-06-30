@@ -213,6 +213,17 @@ button {
     text-decoration: underline;
 }
 
+.nameAndSurname {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.name input,
+.surname input {
+    width: 170px;
+}
+
 @media screen and (max-height: 500px) {
     .container {
          height: 100%;

@@ -4,14 +4,29 @@ import styles from './Login.module.css'
 import cn from 'classnames'
 import { useNavigate } from 'react-router-dom'
 import { FaChevronLeft } from "react-icons/fa";
+import { useUserStore } from '../../../store/userStore.js'
 
 export default function Login() {
+    const login = useUserStore(state => state.login)
     const navigate = useNavigate()
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [apiErrors, setApiErrors] = useState("")
     const [loadThis, setloadThis] = useState("Войти")
-    const [isHovered, setIsHovered] = useState(false);
+    const [isHovered, setIsHovered] = useState(false)
+    const [ip, setIp] = useState("")
+
+    useEffect(() => {
+        document.title = "To the point | Логин"
+        function getIPFromAmazon() {
+            fetch('https://checkip.amazonaws.com/')
+                .then((res) => res.text())
+                .then((data) => {
+                    setIp(data.toString().trim());
+                });
+        }
+        getIPFromAmazon()
+    }, [])
 
     const handleHover = () => {
         setIsHovered(true);
@@ -23,6 +38,7 @@ export default function Login() {
 
     const yourAccount = async (e) => {
         try {
+            const date = new Date();
             setloadThis('Ждите пж')
             e.preventDefault();
             if (email === '' || password === '') {
@@ -31,30 +47,18 @@ export default function Login() {
                 return;
             }
             setApiErrors('')
-            const data = {
-                email,
-                password,
-            }
-            const url = 'http://localhost:3000/api/login'
-            const res = await axios.post(url, data, { withCredentials: true })
-            console.log(res)
+            const res = await login(email, password, ip, date)
+            localStorage.setItem('accessToken', res)
             setloadThis('Войти')
-            if (localStorage.getItem('accessToken') !== null) {
-                localStorage.removeItem('accessToken')
-                localStorage.setItem('accessToken', res.data.accessToken)
-            }
-            localStorage.setItem('accessToken', res.data.accessToken)
-            console.log(res.data)
             alert('Вы успешно зарегистрировались')
             navigate('../')
         } catch (error) {
             setloadThis('Войти')
-            if (error.response) {
-                setApiErrors(error.response.data.message);
-            } else if (error.request) {
-                setApiErrors('Нет ответа от сервера');
-            } else {
-                setApiErrors('Ошибка соединения');
+            if (error.message) {
+                setApiErrors(error.message)
+            }
+            else {
+                setApiErrors("Ошибка сервера, попробуйте позже")
             }
         }
     }
@@ -92,14 +96,14 @@ export default function Login() {
                         placeholder="Введите email" 
                         value={email}
                         onChange={e => setEmail(e.target.value)}
-                        autocomplete="off"
+                        autoComplete="off"
                     />
                     <label>Пароль</label>
                     <input 
                         type="password" 
                         name="password"
                         placeholder="Введите password"
-                        autocomplete="off"
+                        autoComplete="off"
                         value={password} 
                         onChange={e => setPassword(e.target.value)}
                     />

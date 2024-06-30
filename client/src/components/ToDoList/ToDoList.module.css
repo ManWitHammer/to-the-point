@@ -1,0 +1,53 @@
+.ToDoList {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column-reverse;
+    overflow-y: auto;
+    border-bottom: 3px solid white;
+}
+
+.ToDoList li {
+    font-size: 16px;
+    padding: 4px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    color: rgb(14, 34, 61);
+}
+
+.ToDoList li:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.ToDoList li:hover .deleteAndtime {
+    display: flex;
+}
+
+.deleteAndtime {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    color: rgb(14, 34, 61);
+}
+
+.deleteAndtime svg {
+    cursor: pointer;
+}
+
+.task {
+    padding: none;
+    width: calc(100% - 40px);
+    border-bottom: none;
+    height: auto;
+    color: rgb(14, 34, 61);
+}
+
+.task::placeholder {
+    color: rgb(14, 34, 61);
+}
+
+.taskSpan {
+    padding-left: 4px;
+}
