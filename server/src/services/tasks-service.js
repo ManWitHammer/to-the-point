@@ -8,12 +8,13 @@ class TasksService {
         if (!refreshToken) throw ApiError.UnauthorizedError()
 
         const userData = await tokenService.validateRefreshToken(refreshToken)
-        const userId = userData.Id
+        const userId = userData.id
         
         if (taskObj.title == '' || taskObj.time == '') {
             throw new ApiError('Заполните все поля:)')
         }
 		const candidate = await TasksModel.findOne({ userId })
+        console.log(candidate)
 		if (!candidate) {
             const taskData = await TasksModel.create({
                 userId,
@@ -78,10 +79,16 @@ class TasksService {
 
 		const taskData = await tokenService.validateRefreshToken(refreshToken)
 		const task = await TasksModel.findOne({ userId: taskData.id })
-
-		if (!taskData || !task) throw ApiError.UnauthorizedError()
-
-		return { tasks: task.tasks }
+        if (task) {
+            return { tasks: task.tasks }
+        }
+		else if (!task) {
+            await TasksModel.create({
+                userId: taskData.id,
+                tasks: []
+            })
+			return { tasks: [] }
+		}
 	}
 
 }

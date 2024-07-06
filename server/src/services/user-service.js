@@ -94,6 +94,24 @@ class UserService {
 		return { ...tokens, user: userDto }
 	}
 
+	async setAvatar(refreshToken, avatarPath) {
+		if (!refreshToken) throw ApiError.UnauthorizedError()
+
+		const userData = await tokenService.validateRefreshToken(refreshToken)
+		const user = await UserModel.findOne({ email: userData.email })
+
+		if (!userData || !user) throw ApiError.UnauthorizedError()
+		if (avatarPath !== null) {
+			user.avatar = avatarPath
+			await user.save()
+			return { user: avatarPath }
+		}
+		else {
+			return { user: user.avatarPath }
+		}
+
+	}
+
 	async checkAuth(refreshToken) {
 		if (!refreshToken) throw ApiError.UnauthorizedError()
 

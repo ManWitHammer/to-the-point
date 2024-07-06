@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios'
 import { create } from 'zustand'
 import { PREFIX } from '../src/config/api.config'
+import avatarNotFined from '../src/assets/avatar-not-fined.png'
 
 export const useUserStore = create(set => ({
 	userName: '',
@@ -8,6 +9,7 @@ export const useUserStore = create(set => ({
 	userColor: '',
 	userEmail: '',
 	userId: '',
+	userAvatar: avatarNotFined,
 	userIsActivated: false,
 
 	login: async (email, password, ip, date) => {
@@ -67,19 +69,41 @@ export const useUserStore = create(set => ({
 		}
 	},
 
+	setAvatar: async (avatar) => {
+		try {
+			const { data } = await axios.post(`${PREFIX}/api/setAvatar`, avatar, { 
+				headers: { 'Content-Type': 'multipart/form-data' },
+				withCredentials: true 
+			})
+			console.log(data)
+			set({
+				userAvatar: `${PREFIX}/${data.user}`
+			})
+		} catch (err) {
+			if (err instanceof AxiosError) {
+				throw new Error(err.response?.data.message)
+			} else if (err.request) {
+                throw new Error('Нет ответа от сервера');
+            } else {
+                throw new Error('Ошибка соединения');
+            }
+		}
+	},
+
 	checkAuth: async () => {
 		try {
 			const { data } = await axios.get(`${PREFIX}/api/checkAuth`, {
 				withCredentials: true
 			})
-
+			const avatarXD = data.user.avatar ? `${PREFIX}/${data.user.avatar}` : avatarNotFined;
 			set({
 				userEmail: data.user.email,
 				userId: data.user.id,
 				userIsActivated: data.user.isActivated,
 				userName: data.user.name,
 				userSurname: data.user.surname,
-				userColor: data.user.avatarColor
+				userColor: data.user.avatarColor,
+				userAvatar: avatarXD
 			})
 
 			return true
@@ -90,6 +114,7 @@ export const useUserStore = create(set => ({
 				userEmail: '',
 				userId: '',
 				userColor: '',
+				userAvatar: avatarNotFined,
 				userIsActivated: false
 			})
 

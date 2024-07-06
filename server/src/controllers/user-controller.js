@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import { validationResult } from 'express-validator'
 import { ApiError } from '../exceptions/api-errors.js'
+import { deleteFileOnError, deletePreviousFile } from '../middlewares/multer-middleware.js'
 import userService from '../services/user-service.js'
 
 class UserController {
@@ -69,7 +70,25 @@ class UserController {
 			next(err)
 		}
 	}
-	
+
+	async setAvatar(req, res, next) {
+		try {
+			const errors = validationResult(req)
+			if (!errors.isEmpty()) {
+				deleteFileOnError(req, res, next)
+				return next(ApiError.BadRequest('Некорректные данные', errors.array()))
+			}
+			const { refreshToken } = req.cookies
+			const avatarPath = req.file ? req.file.path : null
+			if (!avatarPath) throw ApiError.BadRequest('Необходимо загрузить аватарку')
+			deletePreviousFile(req, res, next)
+			const avatar = await userService.setAvatar(refreshToken, avatarPath)
+			return res.json(avatar)
+		} catch (err) {
+			next(err)
+		}
+	}
+
 	async checkAuth(req, res, next) {
 		try {
 			const { refreshToken } = req.cookies

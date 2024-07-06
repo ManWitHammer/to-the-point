@@ -5,18 +5,20 @@ import express from 'express'
 import mongoose from 'mongoose'
 import errorMiddleware from './middlewares/error-middleware.js'
 import router from './router/index.js'
-import geoip from 'geoip-lite'
 
 const PORT = process.env.PORT || 3000
 const MONGO_URL = process.env.MONGO_URL
 
 const app = express()
 
-app.use(cors({
-    origin: 'http://localhost:5173', // Ваш клиентский URL
-    credentials: true // Разрешить использование cookies
-}));
+app.use('/uploads', express.static('uploads'))
 app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+app.use(cors({
+    origin: 'http://localhost:5173', 
+    credentials: true 
+}));
 app.use(cookieParser())
 app.use('/api', router)
 app.use(errorMiddleware)

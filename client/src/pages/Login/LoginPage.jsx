@@ -1,9 +1,11 @@
 import axios from 'axios'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import styles from './Login.module.css'
 import cn from 'classnames'
 import { useNavigate } from 'react-router-dom'
 import { FaChevronLeft } from "react-icons/fa";
+import { MdOutlineMail, MdOutlineLock } from "react-icons/md";
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import { useUserStore } from '../../../store/userStore.js'
 
 export default function Login() {
@@ -14,6 +16,10 @@ export default function Login() {
     const [apiErrors, setApiErrors] = useState("")
     const [loadThis, setloadThis] = useState("Войти")
     const [isHovered, setIsHovered] = useState(false)
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const [rickRoll, setRickRoll] = useState(false);
+    const navigateRef1 = useRef(null);
+    const navigateRef2 = useRef(null);
     const [ip, setIp] = useState("")
 
     useEffect(() => {
@@ -28,6 +34,10 @@ export default function Login() {
         getIPFromAmazon()
     }, [])
 
+    const handleRickRoll = () => {
+        setRickRoll(true)
+    }
+
     const handleHover = () => {
         setIsHovered(true);
     };
@@ -36,11 +46,25 @@ export default function Login() {
         setIsHovered(false);
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'ArrowDown' && document.activeElement === navigateRef1.current) {
+            e.preventDefault();
+            navigateRef2.current.focus();
+        } else if (e.key === 'ArrowUp' && document.activeElement === navigateRef2.current) {
+            e.preventDefault();
+            navigateRef1.current.focus();
+        }
+    };
+
+    const handleEye = () => {
+        setIsPasswordVisible(that => !that);
+    }
+
     const yourAccount = async (e) => {
+        e.preventDefault();
         try {
             const date = new Date();
             setloadThis('Ждите пж')
-            e.preventDefault();
             if (email === '' || password === '') {
                 setApiErrors('Заполните все поля')
                 setloadThis('Войти')
@@ -87,10 +111,11 @@ export default function Login() {
                         <h2>Регистрация</h2>
                     </div>
                 </div>
-                <form>
+                <form onKeyDown={handleKeyDown} onSubmit={yourAccount}>
                     {apiErrors !== "" ? <p className={styles["error"]}>{apiErrors}</p> : ""}
-                    <label>Почта</label>
+                    <label><MdOutlineMail/>Почта</label>
                     <input 
+                        ref={navigateRef1}
                         type="email" 
                         name="email" 
                         placeholder="Введите email" 
@@ -98,24 +123,30 @@ export default function Login() {
                         onChange={e => setEmail(e.target.value)}
                         autoComplete="off"
                     />
-                    <label>Пароль</label>
-                    <input 
-                        type="password" 
-                        name="password"
-                        placeholder="Введите password"
-                        autoComplete="off"
-                        value={password} 
-                        onChange={e => setPassword(e.target.value)}
-                    />
-                    <button type="submit" onClick={yourAccount}>{loadThis}</button>
+                    <label><MdOutlineLock/>Пароль</label>
+                    <div className={styles["password"]}>
+                        <input 
+                            ref={navigateRef2}
+                            type={isPasswordVisible ? "text" : "password"} 
+                            name="password"
+                            placeholder="Введите password"
+                            autoComplete="off"
+                            value={password} 
+                            onChange={e => setPassword(e.target.value)}
+                        />
+                        <div className={styles["passwordEye"]} onClick={handleEye}>{isPasswordVisible ? <IoEyeOutline /> : <IoEyeOffOutline/>}</div>
+                    </div>
+                    <button type="submit" onSubmit={yourAccount}>{loadThis}</button>
                 </form>
-                <a
-                    to='../registration'
+                <a  
+                    onClick={handleRickRoll}
                     className={styles['link']} 
                     id='link'>
                     Вы забыли пароль?
                 </a>
-
+            </div>
+            <div className={styles["rickRoll"]} style={rickRoll ? { display: "block", zIndex: 10 } : { display: "none", zIndex: -1 }}>
+                <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=${rickRoll ? "1" : "0"}`} title="Rick Astley - Never Gonna Give You Up (Official Music Video)" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
             </div>
         </div>
     )

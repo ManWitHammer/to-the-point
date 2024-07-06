@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useUserStore } from '../../../store/userStore.js'
-import avatarNotFined from "../../assets/avatar-not-fined.png"
 import styles from './Header.module.css'
 
 let previousLocation = null;
@@ -9,7 +8,7 @@ let previousLocation = null;
 function Header() {
     const location = useLocation();
     const navigate = useNavigate()
-    const { userName, userSurname, userEmail, userId, userColor } = useUserStore()
+    const { userName, userSurname, userEmail, userId, userColor, userAvatar } = useUserStore()
 
     useEffect(() => {
         previousLocation = location;
@@ -29,7 +28,7 @@ function Header() {
                     <div className={styles["avatar"]} >
                     <img 
                         style={{ backgroundColor: `${userColor}` }}
-                        src={avatarNotFined} 
+                        src={userAvatar} 
                         alt="avatar" 
                         onClick={() => {
                         if (userEmail !== "") {

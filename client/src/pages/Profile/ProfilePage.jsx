@@ -1,43 +1,128 @@
-import { useEffect, useState } from 'react'
+import cn from 'classnames'
+import { useEffect, useState, useRef } from 'react'
 import styles from './Profile.module.css'
 import { useUserStore } from '../../../store/userStore.js'
 import avatarNotFined from "../../assets/avatar-not-fined.png"
 import copy from 'copy-to-clipboard';
 import Header from "../../components/Header/Header"
+import { FiSave } from "react-icons/fi";
+import { SiVerizon } from "react-icons/si";
 import platform from 'platform';
 
 export default function Profile() {
-    const { userName, userSurname, userEmail, userId, userIsActivated, userColor} = useUserStore()
+    const { userName, userSurname, userEmail, userId, userIsActivated, userColor, userAvatar, setAvatar} = useUserStore()
     const [osInfo, setOsInfo] = useState('');
     const [osVersion, setOsVersion] = useState('');
-    const [rickRoll, setRickRoll] = useState(false);
+    const [dragging, setDragging] = useState(false)
+    const [fileName, setFileName] = useState('Выбрать фото')
+    const [saveSvg, setSaveSvg] = useState(false)
+    const [fileURL, setFileURL] = useState('');
+    const fileInputRef = useRef(null)
+    const fileRef = useRef(null)
 
     useEffect(() => {
         document.title = "To the point | Твой профиль"
         const os = platform.os.family;
-        const osVers = platform.os.version;
         setOsInfo(os);
         setOsVersion(osVersion)
-        console.log(platform.os)
     }, [])
 
     const handleClick = (textToCopy) => {
         copy(textToCopy);
         alert('Текст скопирован в буфер обмена');
-    };
-    
-    const handleRickRoll = () => {
-        setRickRoll(true)
     }
+
+    const handleDragOver = e => {
+		e.preventDefault();
+		setDragging(true);
+	};
+
+	const handleDragLeave = () => {
+		setDragging(false);
+	};
+
+	const handleDrop = e => {
+		e.preventDefault();
+		setDragging(false);
+		const file = e.dataTransfer.files[0];
+		fileInputRef.current = file;
+		setFileName(file.name);
+		setFileURL(URL.createObjectURL(file));
+	};
+
+	const handleFileInputChange = e => {
+		const files = e.target.files;
+		if (files.length > 0) {
+			const file = files[0];
+            if (file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/gif' || file.type === 'image/webp') {
+                setFileName(file.name);
+                fileInputRef.current = file;
+                setFileURL(URL.createObjectURL(file));
+            }
+		}
+	};
+
+	const handleFileLabelClick = () => {
+		if (fileRef.current && !saveSvg) {
+			fileRef.current.click();
+		}
+	};
+
+    const handleSaveImg = async () => {
+        const formData = new FormData();
+        formData.append('avatar', fileInputRef.current);
+        if (saveSvg || !fileInputRef.current) {
+            return
+        }
+        else if (!saveSvg) {
+            setSaveSvg(true)
+            setTimeout(setTimeout(() => {
+                setSaveSvg(false)
+            }, 2000))
+            await setAvatar(formData)
+        }
+        
+    }
+
+	useEffect(() => {
+		return () => {
+			// Cleanup the object URL to avoid memory leaks
+			if (fileURL) {
+				URL.revokeObjectURL(fileURL);
+			}
+		};
+	}, [fileURL]);
 
     return (
         <div className={styles["app"]}>
         <Header/>
         <div className={styles["card"]}>
             <div className={styles["avatar"]}>
-                <img src={avatarNotFined} style={{ backgroundColor: `${userColor}` }} onClick={handleRickRoll} />
-                <div className={styles["darkAvatar"]} onClick={handleRickRoll}>
+                <img src={fileURL ? fileURL : userAvatar} style={{ backgroundColor: `${userColor}` }} />
+                <div 
+                    className={styles["saveImg"]} 
+                    onClick={handleSaveImg}
+                >
+                    {!saveSvg ? <FiSave/> : <SiVerizon/>}
+                </div>
+                <div
+                    className={cn(styles['darkAvatar'], {
+                        [styles['is-active']]: dragging
+                    })}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
+                    onClick={handleFileLabelClick}
+                >
                     Выбрать фото
+                    <input
+                        ref={fileRef}
+                        name='avatar'
+                        type='file'
+                        accept="image/jpeg, image/png, image/jpg, image/gif, image/webp"
+                        className={styles['file-input']}
+                        onChange={handleFileInputChange}
+                    />
                 </div>
             </div>
             <div className={styles["yourNameAndSurname"]}>
@@ -82,9 +167,6 @@ export default function Profile() {
                 <p>Аккаун не активирован. пожалуйста, зайдите на свою почту, чтобы активировать его</p>
               </div>
             ) : ""}
-        </div>
-        <div className={styles["rickRoll"]} style={rickRoll ? { display: "block", zIndex: 10 } : { display: "none", zIndex: -1 }}>
-            <iframe width="100%" height="100%" src={`https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=${rickRoll ? "1" : "0"}`} title="Rick Astley - Never Gonna Give You Up (Official Music Video)" frameborder="0" allow="autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
       </div>
     )

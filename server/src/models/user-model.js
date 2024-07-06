@@ -3,6 +3,7 @@ import { Schema, model } from 'mongoose'
 const UserSchema = new Schema({
 	surname: { type: String, required: true },
 	name: { type: String, required: true },
+	avatar: { type: String },
 	avatarColor: { type: String },
 	email: { type: String, unique: true, required: true },
 	password: { type: String, required: true },

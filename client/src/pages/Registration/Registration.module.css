@@ -152,9 +152,12 @@ form {
 
 label {
     color: rgb(225, 225, 225);
+    display: flex;
+    gap: 5px;
     padding-left: 5px;
-    text-align: start;
     font-size: 14px;
+    height: 15px;
+    user-select: none;
 }
 
 input {
@@ -221,7 +224,27 @@ button {
 
 .name input,
 .surname input {
-    width: 170px;
+    width: 100%;
+}
+
+.password {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+}
+
+.passwordEye {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    right: 10px;
+    height: 40px;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.password input{
+    width: 100%;
 }
 
 @media screen and (max-height: 500px) {

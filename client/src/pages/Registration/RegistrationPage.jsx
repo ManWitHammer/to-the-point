@@ -1,10 +1,12 @@
-import axios from 'axios'
-import { useState, useEffect } from 'react'
+import { FaRegUser } from "react-icons/fa";
+import { useState, useEffect, useRef } from 'react'
 import styles from './Registration.module.css'
 import { useNavigate } from 'react-router-dom'
 import cn from 'classnames'
 import { FaChevronLeft } from "react-icons/fa";
+import { MdOutlineMail, MdOutlineLock } from "react-icons/md";
 import { useUserStore } from '../../../store/userStore.js'
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 
 export default function Registration() {
     const registration = useUserStore(state => state.registration)
@@ -13,16 +15,19 @@ export default function Registration() {
     const [surname, setSurname] = useState('');
     const [email, setEmail] = useState('');
     const [errorEmail, setErrorEmail] = useState('');
-    const [verifyEmail, setVerifyEmail] = useState('');
     const [errorPass, setErrorPass] = useState('');
-    const [verifyPass, setVerifyPass] = useState('');
     const [password, setPassword] = useState('');
     const [errorPassAgain, setErrorPassAgain] = useState('');
-    const [verifyPassAgain, setVerifyPassAgain] = useState('');
     const [passwordAgain, setPasswordAgain] = useState('');
     const [apiErrors, setApiErrors] = useState("")
     const [loadThis, setloadThis] = useState("Зарегистрироваться")
     const [isHovered, setIsHovered] = useState(false);
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+    const navigateRef1 = useRef(null);
+    const navigateRef2 = useRef(null);
+    const navigateRef3 = useRef(null);
+    const navigateRef4 = useRef(null);
+    const navigateRef5 = useRef(null);
 
     useEffect(() => {
         document.title = "To the point | Регистрация"
@@ -42,13 +47,10 @@ export default function Registration() {
             return emailRegex.test(emaail);
         }
         if (isValidEmail(email)) {
-            setVerifyEmail('email is valid')
             setErrorEmail('')
         } else if (!isValidEmail(email) && email !== '') {
             setErrorEmail('email is not valid')
-            setVerifyEmail('')
         } else if (email === '') {
-            setVerifyEmail('')
             setErrorEmail('')
         }
     }, [email])
@@ -57,43 +59,65 @@ export default function Registration() {
         function isValidLength(password, min, max) {
             const length = password.length;
             return length >= min && length <= max;
-          }
-        if (isValidLength(password, 6, 32)) {
-            setVerifyPass('Малайчынка')
-            setErrorPass('')
-        } else if (!isValidLength(password, 6, 32) && password !== '') {
-            setErrorPass('Количство символов должно быть от 6 до 32')
-            setVerifyPass('')
-        } else if (password === '') {
-            setVerifyPass('')
-            setErrorPass('')
         }
-    }, [password])
+        const regex1 = /\d/;
+        const regex2 = /[a-zA-Zа-яА-Я]/;
 
-    useEffect(() => {
-        function isValidLength(password, min, max) {
-            const length = password.length;
-            return length >= min && length <= max;
+        if (!isValidLength(password, 6, 32) && password !== '') {
+            setErrorPass('Количество символов должно быть от 6 до 32')
+        } else if (!regex1.test(password) && password !== '') {
+            setErrorPass('Пароль должен содержать хотя бы одно число.')
+        } else if (!regex2.test(password) && password !== '') {
+            setErrorPass('Пароль должен содержать хотя бы одну букву.')
+        } else {
+            setErrorPass('')
         }
-        if (password == passwordAgain && passwordAgain !== '') {
-            setVerifyPassAgain('Пароли совпадают')
-            setErrorPassAgain('')
-        } else if (password == passwordAgain && passwordAgain !== '' && !isValidLength(password, 6, 32)) {
-            setVerifyPassAgain('')
-            setErrorPassAgain('Количство символов должно быть от 6 до 32')
-        } else if (password !== passwordAgain && passwordAgain !== '') {
+    
+        if (password !== passwordAgain && passwordAgain !== '') {
             setErrorPassAgain('Пароли не совпадают')
-            setVerifyPassAgain('')
-        } else if (passwordAgain === '') {
-            setVerifyPassAgain('')
+        } else {
             setErrorPassAgain('')
-        } 
-    }, [passwordAgain])
+        }
+    
+    }, [password, passwordAgain]);
+
+    const handleKeyDown = (e) => {
+        console.log(e)
+        if (e.key === 'ArrowDown' && document.activeElement === navigateRef1.current) {
+            e.preventDefault();
+            navigateRef2.current.focus();
+        } else if (e.key === 'ArrowUp' && document.activeElement === navigateRef2.current) {
+            e.preventDefault();
+            navigateRef1.current.focus();
+        } else if (e.key === 'ArrowDown' && document.activeElement === navigateRef2.current) {
+            e.preventDefault();
+            navigateRef3.current.focus();
+        } else if (e.key === 'ArrowUp' && document.activeElement === navigateRef3.current) {
+            e.preventDefault();
+            navigateRef2.current.focus();
+        } else if (e.key === 'ArrowDown' && document.activeElement === navigateRef3.current) {
+            e.preventDefault();
+            navigateRef4.current.focus();
+        } else if (e.key === 'ArrowUp' && document.activeElement === navigateRef4.current) {
+            e.preventDefault();
+            navigateRef3.current.focus();
+        } else if (e.key === 'ArrowDown' && document.activeElement === navigateRef4.current) {
+            e.preventDefault();
+            navigateRef5.current.focus();
+        } else if (e.key === 'ArrowUp' && document.activeElement === navigateRef5.current) {
+            e.preventDefault();
+            navigateRef4.current.focus();
+        }
+    };
+
+    const handleEye = () => {
+        setIsPasswordVisible(that => !that);
+    }
 
     const yourAccount = async (e) => {
+        e.preventDefault();
         try {
             setloadThis('Ждите пж')
-            e.preventDefault();
             if (email === '' || password === '' || passwordAgain === '') {
                 setApiErrors('Заполните все поля')
                 setloadThis('Зарегистрироваться')
@@ -104,9 +128,6 @@ export default function Registration() {
                 setloadThis('Зарегистрироваться')
                 return;
             }
-            setVerifyPassAgain('')
-            setVerifyPass('')
-            setVerifyEmail('')
             setApiErrors('')
             const res = await registration(email, password, name, surname)
             setloadThis('Зарегистрироваться')
@@ -147,13 +168,13 @@ export default function Registration() {
                         })}>Регистрация</h2>
                     </div>
                 </div>
-                <form>
+                <form onKeyDown={handleKeyDown} onSubmit={yourAccount}>
                     {apiErrors !== "" ? <p className={styles["error"]}>{apiErrors}</p> : ""}
                     <div className={styles["nameAndSurname"]}>
                         <div className={styles["name"]}>
-                            <label>Имя</label>
+                            <label><FaRegUser/> Имя</label>
                             <input 
-                                style={errorEmail !== "" ? {borderBottom: "2px solid red"} : {}}
+                                ref={navigateRef1}
                                 type="text" 
                                 name="name" 
                                 placeholder="Введите имя" 
@@ -163,9 +184,9 @@ export default function Registration() {
                             />
                         </div>
                         <div className={styles["surname"]}>
-                            <label>Фамилия</label>
+                            <label><FaRegUser/> Фамилия</label>
                             <input 
-                                style={errorPass !== "" ? {borderBottom: "2px solid red"} : {}}
+                                ref={navigateRef2}
                                 type="text" 
                                 name="surname"
                                 placeholder="Введите фамилию"
@@ -175,10 +196,10 @@ export default function Registration() {
                             />
                         </div>
                     </div>
-                    <label>Почта</label>
+                    <label><MdOutlineMail/>Почта</label>
                     {errorEmail !== "" ? <p className={styles["error"]}>{errorEmail}</p> : ""}
-                    {verifyEmail !== "" ? <p className={styles["verify"]}>{verifyEmail}</p> : ""}
                     <input 
+                        ref={navigateRef3}
                         style={errorEmail !== "" ? {borderBottom: "2px solid red"} : {}}
                         type="email" 
                         name="email" 
@@ -186,22 +207,25 @@ export default function Registration() {
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                     />
-                    <label>Пароль</label>
+                    <label><MdOutlineLock/>Пароль</label>
                     {errorPass !== "" ? <p className={styles["error"]}>{errorPass}</p> : ""}
-                    {verifyPass !== "" ? <p className={styles["verify"]}>{verifyPass}</p> : ""}
-                    <input 
-                        style={errorPass !== "" ? {borderBottom: "2px solid red"} : {}}
-                        type="password" 
-                        name="password"
-                        placeholder="Введите парль"
-                        value={password} 
-                        onChange={e => setPassword(e.target.value)}
-                        autoComplete="off"
-                    />
-                    <label>Подтвердите пароль</label>
+                    <div className={styles["password"]}>
+                        <input
+                            ref={navigateRef4}
+                            style={errorPass !== "" ? {borderBottom: "2px solid red", userSelect: "none"} : {}}
+                            type={isPasswordVisible ? "text" : "password"} 
+                            name="password"
+                            placeholder="Введите парль"
+                            value={password} 
+                            onChange={e => setPassword(e.target.value)}
+                            autoComplete="off"
+                        />
+                        <div className={styles["passwordEye"]} onClick={handleEye}>{isPasswordVisible ? <IoEyeOutline /> : <IoEyeOffOutline/>}</div>
+                    </div>
+                    <label><MdOutlineLock/>Подтвердите пароль</label>
                     {errorPassAgain !== "" ? <p className={styles["error"]}>{errorPassAgain}</p> : ""}
-                    {verifyPassAgain !== "" ? <p className={styles["verify"]}>{verifyPassAgain}</p> : ""}
                     <input 
+                        ref={navigateRef5}
                         style={errorPassAgain !== "" ? {borderBottom: "2px solid red"} : {}}
                         type="password" 
                         name="password" 
@@ -210,7 +234,7 @@ export default function Registration() {
                         onChange={e => setPasswordAgain(e.target.value)}
                         autoComplete="off"
                     />
-                    <button type="submit" onClick={yourAccount}>{loadThis}</button>
+                    <button type="submit" onSubmit={yourAccount}>{loadThis}</button>
                 </form>
             </div>
         </div>
