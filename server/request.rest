@@ -2,8 +2,8 @@ POST http://localhost:3000/api/registration
 Content-Type: application/json
 
 {
-    "email": "niggersadasd@gmail.c",
-    "password": "zxzxz33xxxxxxxxxxxxxxxxxxxxxxxxxxxxzzzzzzzzzzzz",
-    "name": "nikitaz",
-    "surname": "nikitaz"
+    "email": "niggersadasd@gmailччч",
+    "password": "sdss",
+    "name": "ni11",
+    "surname": "ntaz"
 }
