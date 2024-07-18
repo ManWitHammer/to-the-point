@@ -10,7 +10,7 @@ function AddTask() {
 		addTaskToStore({
             title: task,
             description: 'Это не описание',
-            time: new Date().toLocaleString()
+            time: new Date()
         })
 		setTask('')
 	}
@@ -19,7 +19,6 @@ function AddTask() {
             addTask()
         }
     }
-    
     return (
         <>
             <h1 className={styles["whatIsDay"]}>Сегодня</h1>

@@ -26,8 +26,7 @@ class TasksService {
             const taskData = await TasksModel.findOne({ userId })
             taskData.tasks.push(taskObj)
             await taskData.save()
-
-            const filterData = taskData.tasks.find(task => task.title == taskObj.title && task.time == taskObj.time)
+            const filterData = taskData.tasks[taskData.tasks.length - 1]
             const taskDto = new TaskDto(filterData)
 
             return { userTask: taskDto }
@@ -62,8 +61,13 @@ class TasksService {
         if (!refreshToken) throw ApiError.UnauthorizedError()
         if (!newTask || newTask == '') throw ApiError.BadRequest('Не указано новое название')
 
+        if (newTask == '') {
+            throw new ApiError('Заполните все поля:)')
+        }
+
         const userData = await tokenService.validateRefreshToken(refreshToken)
         const tasksData = await TasksModel.findOne({ userId: userData.id })
+        if (!tasksData) throw ApiError.UnauthorizedError()
         tasksData.tasks.forEach(task => {
             if (task._id.toString() == taskId.toString()) {
                 task.title = newTask
@@ -71,8 +75,29 @@ class TasksService {
         })
         await tasksData.save()
         const patchedTask = tasksData.tasks.find(task => task._id == taskId)
-        return { tasks: patchedTask }
+        return { userTask: patchedTask }
 	}
+
+    async patchDescription(refreshToken, newDescription, taskId) {
+        if (!refreshToken) throw ApiError.UnauthorizedError()
+        if (!newDescription || newDescription == '') throw ApiError.BadRequest('Не указано новое название')
+
+        if (newDescription == '') {
+            throw new ApiError('Заполните все поля:)')
+        }
+
+        const userData = await tokenService.validateRefreshToken(refreshToken)
+        const tasksData = await TasksModel.findOne({ userId: userData.id })
+        if (!tasksData) throw ApiError.UnauthorizedError()
+        tasksData.tasks.forEach(task => {
+            if (task._id.toString() == taskId.toString()) {
+                task.description = newDescription
+            }
+        })
+        await tasksData.save()
+        const patchedTask = tasksData.tasks.find(task => task._id == taskId)
+        return { userTask: patchedTask }
+    }
 
     async getTasks(refreshToken) {
 		if (!refreshToken) throw ApiError.UnauthorizedError()
@@ -87,7 +112,7 @@ class TasksService {
                 userId: taskData.id,
                 tasks: []
             })
-			return { tasks: [] }
+			return { userTask: [] }
 		}
 	}
 

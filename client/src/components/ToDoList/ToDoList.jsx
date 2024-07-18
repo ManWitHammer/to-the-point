@@ -2,24 +2,34 @@ import { useState } from 'react'
 import styles from './ToDoList.module.css'
 import { MdDeleteOutline, MdOutlineSchedule } from "react-icons/md";
 import { useTasksStore } from '../../../store/tasksStore'
-import { useUserStore } from '../../../store/userStore'
 
 function ToDoList() {
-    const { tasks, deleteTaskFromStore, changeTaskFromStore } = useTasksStore()
-    const userIdFromStore = useUserStore(state => state.userId)
+    const { tasks, setChoosedTask, deleteTaskFromStore, changeTaskFromStore } = useTasksStore()
     const [updateTask, setUpdateTask] = useState("")
     const [updateTaskId, setUpdateTaskId] = useState("")
 
 	const deleteTask = task => {
-		deleteTaskFromStore(task, userIdFromStore)
+		deleteTaskFromStore(task)
 	}
-    const changeTask = async (oldTask, newTask, taskId) => {
-		changeTaskFromStore(oldTask, newTask, taskId)
+    const changeTask = async (task, newTask) => {
+		changeTaskFromStore(task.title, newTask, task._id)
+        setChoosedTask({
+            title: newTask,
+            description: task.description,
+            time: task.time,
+            id: task._id
+        })
 	}
 
-    const clearInput = () => {
+    const clearInput = (task) => {
         setUpdateTask("")
         setUpdateTaskId("")
+        setChoosedTask({
+            title: task.title,
+            description: task.description,
+            time: task.time,
+            id: task._id
+        })
     }
 
     return (
@@ -34,12 +44,28 @@ function ToDoList() {
                         onFocus={() => {
                             setUpdateTaskId(task._id)
                             setUpdateTask(task.title)
+                            setChoosedTask({
+                                title: task.title,
+                                description: task.description,
+                                time: task.time,
+                                id: task._id
+                            })
                         }}
-                        onChange={e => setUpdateTask(e.target.value)}
-                        onBlur={() => task.title !== updateTask && updateTask !== '' ? changeTask(task.title, updateTask, task._id ) : clearInput()}
+                        onChange={e => {
+                            setUpdateTask(e.target.value)
+                            setChoosedTask({
+                                title: e.target.value,
+                                description: task.description,
+                                time: task.time,
+                                id: task._id
+                            })
+                        }}
+                        onBlur={() => {
+                            task.title !== updateTask && updateTask !== '' ? changeTask(task, updateTask) : clearInput(task)
+                        }}
                     />
                     <div className={styles["deleteAndtime"]}>
-                        <MdOutlineSchedule className={styles["time"]} title={task.time}/>
+                        <MdOutlineSchedule className={styles["time"]} title={new Date(task.time).toLocaleString()}/>
                         <MdDeleteOutline onClick={() => deleteTask(task)}/>
                     </div>
 				</li>

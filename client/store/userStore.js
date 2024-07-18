@@ -14,7 +14,6 @@ export const useUserStore = create(set => ({
 
 	login: async (email, password, ip, date) => {
 		try {
-			console.log(`${PREFIX}/api/login`)
 			const { data } = await axios.post(`${PREFIX}/api/login`, {
 				email,
 				password,
@@ -59,6 +58,26 @@ export const useUserStore = create(set => ({
 			})
 			return data.accessToken
 		} catch (err) {
+			console.log(err)
+			if (err instanceof AxiosError) {
+				throw new Error(err.response?.data.message)
+			} else if (err.request) {
+                throw new Error('Нет ответа от сервера');
+            } else {
+                throw new Error('Ошибка соединения');
+            }
+		}
+	},
+
+	logout: async () => {
+		try {
+			const { data } = await axios.post(`${PREFIX}/api/logout`, {}, { 
+				withCredentials: true 
+			})
+			if (data) {
+				return data
+			}
+		} catch (err) {
 			if (err instanceof AxiosError) {
 				throw new Error(err.response?.data.message)
 			} else if (err.request) {
@@ -75,11 +94,11 @@ export const useUserStore = create(set => ({
 				headers: { 'Content-Type': 'multipart/form-data' },
 				withCredentials: true 
 			})
-			console.log(data)
 			set({
 				userAvatar: `${PREFIX}/${data.user}`
 			})
 		} catch (err) {
+			console.log(err)
 			if (err instanceof AxiosError) {
 				throw new Error(err.response?.data.message)
 			} else if (err.request) {

@@ -63,7 +63,7 @@ export default function Registration() {
         const regex1 = /\d/;
         const regex2 = /[a-zA-Zа-яА-Я]/;
 
-        if (!isValidLength(password, 6, 32) && password !== '') {
+        if (!isValidLength(password, 6, 20) && password !== '') {
             setErrorPass('Количество символов должно быть от 6 до 32')
         } else if (!regex1.test(password) && password !== '') {
             setErrorPass('Пароль должен содержать хотя бы одно число.')
@@ -72,7 +72,6 @@ export default function Registration() {
         } else {
             setErrorPass('')
         }
-    
         if (password !== passwordAgain && passwordAgain !== '') {
             setErrorPassAgain('Пароли не совпадают')
         } else {
@@ -82,7 +81,6 @@ export default function Registration() {
     }, [password, passwordAgain]);
 
     const handleKeyDown = (e) => {
-        console.log(e)
         if (e.key === 'ArrowDown' && document.activeElement === navigateRef1.current) {
             e.preventDefault();
             navigateRef2.current.focus();
@@ -118,13 +116,13 @@ export default function Registration() {
         e.preventDefault();
         try {
             setloadThis('Ждите пж')
-            if (email === '' || password === '' || passwordAgain === '') {
+            if (name === "" || surname === "" || email === '' || password === '' || passwordAgain === '') {
                 setApiErrors('Заполните все поля')
                 setloadThis('Зарегистрироваться')
                 return;
             }
-            if (errorPass !== "" || errorPassAgain!== "" || errorEmail!== "") {
-                setApiErrors('Хмммм, что-то здесь не так')
+            if (password!== passwordAgain) {
+                setApiErrors('Пароли не совпадают')
                 setloadThis('Зарегистрироваться')
                 return;
             }

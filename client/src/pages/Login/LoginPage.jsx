@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { useState, useEffect, useRef } from 'react'
 import styles from './Login.module.css'
 import cn from 'classnames'

@@ -2,7 +2,7 @@ import cn from 'classnames'
 import { useEffect, useState, useRef } from 'react'
 import styles from './Profile.module.css'
 import { useUserStore } from '../../../store/userStore.js'
-import avatarNotFined from "../../assets/avatar-not-fined.png"
+import { useNavigate } from 'react-router-dom'
 import copy from 'copy-to-clipboard';
 import Header from "../../components/Header/Header"
 import { FiSave } from "react-icons/fi";
@@ -10,15 +10,16 @@ import { SiVerizon } from "react-icons/si";
 import platform from 'platform';
 
 export default function Profile() {
-    const { userName, userSurname, userEmail, userId, userIsActivated, userColor, userAvatar, setAvatar} = useUserStore()
+    const { userName, userSurname, userEmail, userId, userIsActivated, userColor, userAvatar, setAvatar, logout} = useUserStore()
     const [osInfo, setOsInfo] = useState('');
     const [osVersion, setOsVersion] = useState('');
     const [dragging, setDragging] = useState(false)
-    const [fileName, setFileName] = useState('Выбрать фото')
     const [saveSvg, setSaveSvg] = useState(false)
     const [fileURL, setFileURL] = useState('');
+    const [apiErrors, setApiErrors] = useState("")
     const fileInputRef = useRef(null)
     const fileRef = useRef(null)
+    const navigate = useNavigate()
 
     useEffect(() => {
         document.title = "To the point | Твой профиль"
@@ -43,21 +44,35 @@ export default function Profile() {
 
 	const handleDrop = e => {
 		e.preventDefault();
+        setApiErrors('')
 		setDragging(false);
 		const file = e.dataTransfer.files[0];
-		fileInputRef.current = file;
-		setFileName(file.name);
-		setFileURL(URL.createObjectURL(file));
+        if (file.size > 1024 * 1024 * 4) {
+            setApiErrors('Максимальный размер файла - 4 МБ');
+            return;
+        }
+        if (file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/gif' || file.type === 'image/webp') {
+            fileInputRef.current = file;
+            setFileURL(URL.createObjectURL(file));
+        } else {
+            setApiErrors('Неподдерживаемый формат файла')
+        }
 	};
 
 	const handleFileInputChange = e => {
-		const files = e.target.files;
+		const files = e.target.files
+        setApiErrors('');
 		if (files.length > 0) {
 			const file = files[0];
+            if (file.size > 1024 * 1024 * 4) {
+                setApiErrors('Максимальный размер файла - 4 МБ');
+                return;
+            }
             if (file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/gif' || file.type === 'image/webp') {
-                setFileName(file.name);
                 fileInputRef.current = file;
                 setFileURL(URL.createObjectURL(file));
+            } else {
+                setApiErrors('Неподдерживаемый формат файла')
             }
 		}
 	};
@@ -70,18 +85,36 @@ export default function Profile() {
 
     const handleSaveImg = async () => {
         const formData = new FormData();
-        formData.append('avatar', fileInputRef.current);
-        if (saveSvg || !fileInputRef.current) {
-            return
-        }
-        else if (!saveSvg) {
+        formData.append('avatar', fileInputRef.current)
+        try {
+            if (saveSvg || !fileInputRef.current) {
+                return
+            }
+            await setAvatar(formData)
             setSaveSvg(true)
             setTimeout(setTimeout(() => {
                 setSaveSvg(false)
             }, 2000))
-            await setAvatar(formData)
+        } 
+        catch (error) {
+            if (error.message) {
+                setApiErrors(error.message)
+            }
+            else {
+                setApiErrors("Ошибка сервера, попробуйте позже")
+            }
         }
-        
+    }
+
+    const handleLogout = async () => {
+        localStorage.clear()
+        const res = await logout()
+        if (res) {
+            navigate('../')
+        }
+        else {
+            alert('Непредивденная ошибка, повторите попытку позже😱😱😭😭')
+        }
     }
 
 	useEffect(() => {
@@ -96,6 +129,7 @@ export default function Profile() {
     return (
         <div className={styles["app"]}>
         <Header/>
+        {apiErrors && <h1 className={styles["api-error"]}>{apiErrors}</h1>}
         <div className={styles["card"]}>
             <div className={styles["avatar"]}>
                 <img src={fileURL ? fileURL : userAvatar} style={{ backgroundColor: `${userColor}` }} />
@@ -168,6 +202,7 @@ export default function Profile() {
               </div>
             ) : ""}
         </div>
+        <button className={styles["logout"]} onClick={handleLogout} >Выйти</button>
       </div>
     )
 }

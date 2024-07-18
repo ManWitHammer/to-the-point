@@ -25,6 +25,7 @@ class TasksController {
 			next(err)
 		}
 	}
+
 	async patchTask(req, res, next) {
 		try {
 			const { taskId } = req.params
@@ -36,6 +37,19 @@ class TasksController {
 			next(err)
 		}
 	}
+
+	async patchDescription(req, res, next) {
+		try {
+			const { refreshToken } = req.cookies
+			const { taskId } = req.params
+			const { newDescription } = req.body
+            const taskData = await tasksService.patchDescription(refreshToken, newDescription, taskId)
+            return res.json(taskData)
+		} catch (err) {
+			next(err)
+		}
+	}
+
     async getTasks(req, res, next) {
 		try {
 			const { refreshToken } = req.cookies

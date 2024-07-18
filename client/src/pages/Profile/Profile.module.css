@@ -17,11 +17,17 @@
     width: 450px;
     border-radius: 20px;
     background: rgb(255, 255, 255);
-    margin-top: 150px;
+    margin-top: 70px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.api-error {
+    margin-top: 20px;
+    color: red;
+    font-size: 25px;
 }
 
 .toAuth {
@@ -124,6 +130,11 @@
 
 .yourInfo:hover {
     background: rgba(0, 0, 0, 0.2);
+}
+
+.logout {
+    margin: 10px;
+    width: calc(0.5 * 450px);
 }
 
 .darkAvatar.is-active {

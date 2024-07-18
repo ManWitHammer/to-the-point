@@ -5,7 +5,7 @@ const TasksSchema = new Schema({
     tasks: [{ 
         title: { type: String, require: true },
         description: { type: String, require: true },
-        time: { type: String, require: true },
+        time: { type: Date, require: true },
         taskId: { type: Schema.Types.ObjectId, ref: 'Task', require: true },
     }]
 })
